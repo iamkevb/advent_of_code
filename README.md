@@ -1,3 +1,3 @@
-# Advent of Code 2021
+# Advent of Code
 
-Brute forcing my way through Advent of Code problems.
+Brute forcing my way through Advent of Code using languages I don't know.
