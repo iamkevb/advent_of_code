@@ -15,10 +15,9 @@ defmodule Ex202011 do
   def findProduct2(sum, [head | tail]) do
     v2 = Enum.find(tail, fn x -> sum - x === head end)
 
-    if v2 != nil do
-      v2 * head
-    else
-      findProduct2(sum, tail)
+    case v2 do
+      nil -> findProduct2(sum, tail)
+      _ -> v2 * head
     end
   end
 
