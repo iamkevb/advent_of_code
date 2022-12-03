@@ -8,7 +8,7 @@ defmodule Day3 do
   @spec computePriority([String.t()]) :: integer()
   def computePriority(e) do
     Enum.reduce(e, 0, fn v, acc ->
-      [c | _] = String.to_charlist(v)
+      c = String.to_charlist(v) |> hd
 
       if c >= ?a do
         acc + c - ?a + 1
