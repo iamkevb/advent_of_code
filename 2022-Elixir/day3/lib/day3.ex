@@ -24,11 +24,9 @@ defmodule Day3 do
     bg =
       String.graphemes(b)
       |> Enum.uniq()
-      |> Enum.dedup()
 
     String.graphemes(a)
     |> Enum.uniq()
-    |> Enum.dedup()
     |> Enum.filter(fn c -> Enum.find(bg, fn v -> v === c end) end)
     |> Enum.reduce("", fn c, acc -> acc <> c end)
   end
