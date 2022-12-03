@@ -1,9 +1,11 @@
 defmodule Day3 do
+  @spec readInput(String.t()) :: [String.t()]
   defp readInput(path) do
     File.read!(path)
     |> String.split("\n")
   end
 
+  @spec computePriority([String.t()]) :: integer()
   def computePriority(e) do
     Enum.reduce(e, 0, fn v, acc ->
       [c | _] = String.to_charlist(v)
@@ -16,10 +18,12 @@ defmodule Day3 do
     end)
   end
 
+  @spec findBadge([String.t()]) :: String.t()
   def findBadge([a, b, c]) do
     commonGlyphs(a, commonGlyphs(b, c))
   end
 
+  @spec commonGlyphs(String.t(), String.t()) :: String.t()
   def commonGlyphs(a, b) do
     bg =
       String.graphemes(b)
@@ -31,6 +35,7 @@ defmodule Day3 do
     |> Enum.reduce("", fn c, acc -> acc <> c end)
   end
 
+  @spec part1(String.t()) :: integer
   def part1(path \\ "input.test.txt") do
     readInput(path)
     |> Enum.map(fn v ->
@@ -40,6 +45,7 @@ defmodule Day3 do
     |> computePriority()
   end
 
+  @spec part2(String.t()) :: integer
   def part2(path \\ "input.test.txt") do
     readInput(path)
     |> Enum.chunk_every(3)
