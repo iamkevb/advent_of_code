@@ -14,13 +14,7 @@ defmodule Day4 do
   defp overlapFull([a, b, c, d]), do: (a <= c && b >= d) || (c <= a && d >= b)
   defp overlapFull(_), do: false
 
-  defp overlapAny([a, b, c, d]),
-    do:
-      (c <= a && a <= d) ||
-        (c <= b && b <= d) ||
-        (a <= c && c <= b) ||
-        (a <= d && d <= b)
-
+  defp overlapAny([a, b, c, d]), do: max(a, c) <= min(b, d)
   defp overlapAny(_), do: false
 
   def part1(path \\ "input.test.txt") do
