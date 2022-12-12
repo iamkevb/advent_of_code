@@ -7,7 +7,7 @@ defmodule Monkey do
           actionFalse: Integer,
           inspected: Integer
         }
-  defstruct [:items, :operation, :testValue, :actionTrue, :actionFalse, :inspected]
+  defstruct [:items, :operation, :testValue, :actionTrue, :actionFalse, :inspected, :product]
 
   def operate(level, {"*", -1}), do: level * level
   def operate(level, {"+", -1}), do: level + level
@@ -19,7 +19,9 @@ defmodule Monkey do
       monkey
     else
       # monkey inspects, then gets bored
-      item = operate(elem(monkey.items, 0), monkey.operation) |> div(3)
+      # part 2 removes |> div(3)
+      item = operate(elem(monkey.items, 0), monkey.operation)
+      item = rem(item, monkey.product)
       [_ | il] = Tuple.to_list(monkey.items)
 
       %Monkey{monkey | items: List.to_tuple([item | il]), inspected: monkey.inspected + 1}

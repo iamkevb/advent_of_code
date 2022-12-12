@@ -41,7 +41,9 @@ defmodule Day11 do
       Map.get(monkeys, key)
       |> Monkey.inspect()
 
-    if(tuple_size(monkey.items) > 0) do
+    tsize = tuple_size(monkey.items)
+
+    if(tsize > 0) do
       nextMonkeyIndex = Monkey.nextMonkeyIndex(monkey)
       nextMonkey = Map.get(monkeys, nextMonkeyIndex)
 
@@ -80,14 +82,18 @@ defmodule Day11 do
     |> String.split("\n\n")
     |> Enum.map(fn md ->
       String.split(md, "\n")
-      |> Enum.reduce(%Monkey{inspected: 0}, fn line, monkey ->
+      |> Enum.reduce(%Monkey{inspected: 0, product: 0}, fn line, monkey ->
         parseMonkeyLine(monkey, String.split(String.trim(line), ":"))
       end)
     end)
   end
 
   def part1(path \\ "input.test.txt") do
-    parseMonkeys(path)
+    monkeys = parseMonkeys(path)
+    product = Enum.reduce(monkeys, 1, fn m, acc -> acc * m.testValue end)
+    IO.puts(product)
+
+    Enum.map(monkeys, fn m -> %Monkey{m | product: product} end)
     |> Enum.with_index()
     |> Map.new(fn {v, k} -> {k, v} end)
     |> playRounds(20)
@@ -98,10 +104,14 @@ defmodule Day11 do
   end
 
   def part2(path \\ "input.test.txt") do
-    parseMonkeys(path)
+    monkeys = parseMonkeys(path)
+    product = Enum.reduce(monkeys, 1, fn m, acc -> acc * m.testValue end)
+    IO.puts(product)
+
+    Enum.map(monkeys, fn m -> %Monkey{m | product: product} end)
     |> Enum.with_index()
     |> Map.new(fn {v, k} -> {k, v} end)
-    |> playRounds(300)
+    |> playRounds(10000)
     |> Enum.map(fn {_, v} -> v.inspected end)
     |> Enum.sort(&(&2 < &1))
     |> Enum.take(2)
