@@ -64,6 +64,47 @@ defmodule Day14 do
     |> elem(1)
     |> then(&(&1 - 1))
   end
+
+  def drop_on_floor(grid, {x, y}, floor) when y == floor - 1, do: Map.put(grid, {x, y}, true)
+
+  def drop_on_floor(grid, {x, y}, floor) do
+    moves = [
+      {x, y + 1},
+      {x - 1, y + 1},
+      {x + 1, y + 1}
+    ]
+
+    next =
+      Enum.reject(moves, fn m -> grid[m] end)
+      |> Enum.take(1)
+
+    case next do
+      [] -> Map.put(grid, {x, y}, true)
+      _ -> drop_on_floor(grid, hd(next), floor)
+    end
+  end
+
+  def drop_sand_on_floor(grid) do
+    max_y = Map.keys(grid) |> Enum.reduce(0, fn {_, v}, acc -> max(acc, v) end)
+    floor = max_y + 2
+
+    Enum.reduce_while(Stream.cycle([{500, 0}]), {grid, 0}, fn e, {map, count} ->
+      if map[e] do
+        {:halt, {map, count + 1}}
+      else
+        m = drop_on_floor(map, e, floor)
+        {:cont, {m, count + 1}}
+      end
+    end)
+  end
+
+  def part2(path \\ "input.test.txt") do
+    parse_input(path)
+    |> parse_lines()
+    |> drop_sand_on_floor()
+    |> elem(1)
+    |> then(&(&1 - 1))
+  end
 end
 
 # Day14.part1()
