@@ -21,6 +21,8 @@ defmodule Sensor do
 end
 
 defmodule Day15 do
+  alias Inspect.Range
+
   def parse(path) do
     File.read!(path)
     |> String.split("\n")
@@ -42,30 +44,43 @@ defmodule Day15 do
   end
 
   def combine_overlapping_ranges(ranges) do
-    sorted_ranges = Enum.sort(ranges, fn start_a.._, start_b.._ -> start_a < start_b end)
+    sorted_ranges = Enum.sort(ranges, fn _..s, _..e -> e < s end)
 
     combined_ranges =
       sorted_ranges
-      |> Enum.reduce([], fn start_a..end_a, acc ->
+      |> Enum.reduce([], fn next, acc ->
+        # acc_a..acc_b = acc
+        a..b = next
+
         case acc do
+          # just add first range
           [] ->
-            [start_a..end_a]
+            [next]
 
-          [start_b..end_b | _] when end_a >= start_b and end_b >= start_a ->
-            [min(start_a, start_b)..max(end_a, end_b) | Enum.drop(acc, 1)]
+          # does a..b intersect acc_a..acc_b
+          [acc_a..acc_b | _] when b >= acc_a ->
+            # IO.puts("1 #{a}..#{b} #{acc_b}..#{acc_b}")
+            [min(a, acc_a)..max(b, acc_b) | Enum.drop(acc, 1)]
 
+          # is a..b consecutive to acc_a..acc_b (1..2, 3..5)
+          [acc_a..acc_b | _] when b + 1 == acc_a ->
+            # IO.puts("2 a..b#{a}..#{b} acc_a..acc_b#{acc_a}..#{acc_b}")
+            [a..acc_b | Enum.drop(acc, 1)]
+
+          # no intersection, prepend new range
           _ ->
-            [start_a..end_a | acc]
+            [acc_a..acc_b | _] = acc
+            # IO.puts("3 a..b #{a}..#{b} acc_a..acc_b #{acc_a}..#{acc_b}")
+            [a..b | acc]
         end
       end)
-      |> Enum.reverse()
 
     combined_ranges
   end
 
   def part1(path \\ "input.test.txt") do
-    sensor_row = 2_000_000
-    # sensor_row = 10
+    # sensor_row = 2_000_000
+    sensor_row = 10
     sensors = parse(path)
 
     sensors_on_row =
@@ -99,5 +114,31 @@ defmodule Day15 do
     |> combine_overlapping_ranges()
     |> Enum.reduce(0, fn s..e, acc -> acc + e - s + 1 end)
     |> then(&(&1 - sensors_on_row - beacons_on_row))
+  end
+
+  def search_row(_, 0), do: :you_failed_kevin
+
+  def search_row(sensors, row) do
+    ranges =
+      Enum.map(sensors, fn s ->
+        range_at_y(s, row)
+      end)
+      |> Enum.reject(&(&1 == :ignore))
+      |> combine_overlapping_ranges()
+
+    if length(ranges) == 1 do
+      search_row(sensors, row - 1)
+    else
+      # ranges
+      [_..s, e.._] = ranges
+      {s, e, row}
+    end
+  end
+
+  def part2(path \\ "input.test.txt") do
+    max_row = 4_000_000
+
+    parse(path)
+    |> search_row(max_row)
   end
 end

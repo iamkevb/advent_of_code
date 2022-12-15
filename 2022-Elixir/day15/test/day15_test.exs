@@ -26,11 +26,13 @@ defmodule Day15Test do
   end
 
   test "combine ranges" do
-    assert [1..2, 3..5] === Day15.combine_overlapping_ranges([1..2, 3..5])
-    assert [1..2, 3..5] === Day15.combine_overlapping_ranges([3..5, 1..2])
+    assert [1..5] === Day15.combine_overlapping_ranges([1..2, 3..5])
+    assert [1..5] === Day15.combine_overlapping_ranges([3..5, 1..2])
     assert [1..5] === Day15.combine_overlapping_ranges([3..5, 1..3])
     assert [1..10] === Day15.combine_overlapping_ranges([1..4, 6..10, 3..7])
     assert [-2..24] === Day15.combine_overlapping_ranges([-2..18, 16..24])
     assert [1..10] === Day15.combine_overlapping_ranges([1..10, 3..5])
+    assert [12..12, 14..24] === Day15.combine_overlapping_ranges([12..12, 14..24])
+    assert [2..14] === Day15.combine_overlapping_ranges([2..2, 2..14])
   end
 end
