@@ -49,9 +49,7 @@ func countTimelines(grid [][]rune, timelines []int64) []int64 {
 	}
 
 	newTimelines := make([]int64, len(timelines))
-	for i := range timelines {
-		v := timelines[i]
-
+	for i, v := range timelines {
 		if grid[0][i] == '^' && v > 0 {
 			newTimelines[i] = 0
 			newTimelines[i-1] += v
